@@ -21,10 +21,7 @@ int TLE(){
 
 int main(){
   int L, R, K, ans;
-  L = 1;
-  R = 10;
-  K = 10;
-  ans = 8;
+  cin >> ans >> L >> R >> K; //get input file
   
   cout << L << " " << R << " " << K << endl;
   fflush(stdout);
