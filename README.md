@@ -17,7 +17,7 @@ FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux.
    - ***MODE***
       - **Normal**
       
-        Jika <MODE> kosong, maka FeBug akan memakai mode ini secara default. Input berasal dari FILE, bukan keyboard. Gunakan ```-n``` untuk mode ini. Susunan file yang dibutuhkan:
+        Jika argument MODE kosong, maka FeBug akan memakai mode ini secara default. Input berasal dari FILE, bukan keyboard. Gunakan ```-n``` untuk mode ini. Susunan file yang dibutuhkan:
          ```
          code.cpp
          code.in
