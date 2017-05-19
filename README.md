@@ -4,7 +4,7 @@ FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux.
 
 ## Cara Install
 1. Download febug.sh
-2. Kemudian taruh di sebuah directory, anggap saja sekarang berada di ```/home/user/febug```
+2. Kemudian taruh di ```/home/user/febug```
 3. Masuk ke terminal dan edit file ```.bashrc``` dengan cara:
   ```$ gedit .bashrc```
 4. Kemudian tambahkan ```alias febug=~/febug/febug.sh``` pada bagian paling akhir file. Lalu simpan
@@ -16,12 +16,14 @@ FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux.
 2. Kemudian ketikkan ```febug <NAMA FILE> <MODE>``` 
    - ***MODE***
       - **Normal**
+      
         Jika <MODE> kosong, maka FeBug akan memakai mode ini secara default. Input berasal dari FILE, bukan keyboard. Gunakan ```-n``` untuk mode ini. Susunan file yang dibutuhkan:
          ```
          code.cpp
          code.in
          ```
       - **Interaktif**
+      
         Mode ini adalah mode interaktif. Gunakan ```-i``` untuk mode ini. Susunan file yang dibutuhkan:
          ```
          code.cpp
@@ -29,8 +31,13 @@ FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux.
          code.in
          ```
       - **Compile and run only**
+        
         Tidak ada yang spesial dalam mode ini. FeBug hanya meng-*compile* source code saja dan menjalankan seperti biasa. Sehingga menggunakan standart input atau masukan keyboard. Gunakan ```-c``` untuk mode ini. Susunan file yang dibutuhkan:
-        ```code.cpp```
-     > Untuk mengetahui mode yang tersedia, anda cukup mengetikkan ```febug```
-     > Untuk contoh dapat dilihat pada ```examples```
+        ```
+        code.cpp
+        ```
+        
+     > Untuk mengetahui mode yang tersedia, anda cukup mengetikkan ```febug```.
+     
+     > Untuk contoh dapat dilihat pada ```examples```.
 3. FeBug telah berjalan.
