@@ -1,6 +1,6 @@
 # FeBug
 
-FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux. Untuk saat ini, FeBug hanya dapat meng-*compile* bahasa c++11. FeBug membantu dalam men-*debug* program anda tanpa mengubah kode program.
+FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux. Untuk saat ini, FeBug hanya dapat men-*compile* bahasa c++11. FeBug membantu dalam men-*debug* program anda tanpa mengubah kode program.
 
 ## Cara Install
 1. Download febug.sh
@@ -32,7 +32,7 @@ FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux.
          ```
       - **Compile and run only**
         
-        Tidak ada yang spesial dalam mode ini. FeBug hanya meng-*compile* source code saja dan menjalankan seperti biasa. Sehingga menggunakan standart input atau masukan keyboard. Gunakan ```-c``` untuk mode ini. Susunan file yang dibutuhkan:
+        Tidak ada yang spesial dalam mode ini. FeBug hanya men-*compile* source code dan menjalankan seperti biasa. Sehingga menggunakan standart input atau masukan keyboard. Gunakan ```-c``` untuk mode ini. Susunan file yang dibutuhkan:
         ```
         code.cpp
         ```
