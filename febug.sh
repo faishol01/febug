@@ -19,6 +19,12 @@ dua(){
 }
 #END HEADER
 
+footer(){
+	echo ""
+	echo "			     FeBug version 1.1.1"
+	echo "		Developed by Muhammad Faishol Amirul Mukminin"
+}
+
 usage(){
 	echo "Usage: febug <SOURCE CODE> [MODE]"
 	echo ""
@@ -28,29 +34,27 @@ usage(){
 	echo "  -n, --normal              normal mode. Input using FILE."
 	echo ""
 	echo "MODE will use '-n' for the default."
-	echo ""
-	echo "			     FeBug version 1.1.0"
-	echo "		Developed by Muhammad Faishol Amirul Mukminin"
+	footer
 	exit 0
 }
 
 interaktif(){
 	satu
 	#Compile the source code and show the stderr
-	g++ $FILE.cpp -o $FILE
-	g++ $FILE.judge.cpp -o $FILE.judge
+	g++ $FILE.cpp -o $FILE -std=c++11
+	g++ $FILE.judge.cpp -o $FILE.judge -std=c++11
 	dua
 
 	mkfifo pipa pipa2
 
-	rm $FILE.out
-	cat $FILE.in > pipa | ./$FILE.judge < pipa | tee pipa2 >> $FILE.out | ./$FILE < pipa2 | tee pipa >> $FILE.out
+	cat $FILE.in > pipa | ./$FILE.judge < pipa | tee pipa2 >> $FILE.tmp | ./$FILE < pipa2 | tee pipa >> $FILE.tmp
 
 	rm pipa pipa2
 
 	echo ""
 	echo "============START INTERACTION============"
-				cat $FILE.out
+				cat $FILE.tmp | tee $FILE.out
+				rm $FILE.tmp
 	echo "=============END INTERACTION============="
 	echo ""
 
@@ -61,7 +65,7 @@ interaktif(){
 normal(){
 	satu
 	#Compile the source code and show the stderr
-	g++ $FILE.cpp -o $FILE
+	g++ $FILE.cpp -o $FILE -std=c++11
 	dua
 	echo "============START OUTPUT============"
 	#Show the output using stdout and redirect to file
@@ -81,7 +85,7 @@ normal(){
 hanyaCompile(){
 	satu
 	#Compile the source code and show the stderr
-	g++ $FILE.cpp -o $FILE
+	g++ $FILE.cpp -o $FILE -std=c++11
 	dua
 
 	echo "============START PROGRAM============"
@@ -99,9 +103,15 @@ fi
 clear
 
 case "$2" in
+	--compile-run) hanyaCompile
+	;;
 	-c) hanyaCompile
 	;;
+	--interactive) interaktif
+	;;
 	-i) interaktif
+	;;
+	--normal) normal
 	;;
 	-n) normal
 	;;
@@ -111,7 +121,5 @@ esac
 
 #Footer
 echo ""
-echo ""
-echo "			     FeBug version 1.1.0"
-echo "		Developed by Muhammad Faishol Amirul Mukminin"
+footer
 # EOF
