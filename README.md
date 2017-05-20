@@ -8,7 +8,7 @@ FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux.
 3. Masuk ke terminal dan edit file ```.bashrc``` dengan cara:
   ```$ gedit .bashrc```
 4. Kemudian tambahkan ```alias febug=~/febug/febug.sh``` pada bagian paling akhir file. Lalu simpan
-5. Lakukan command ```chmod a+x ~/febug/febug.sh``` agar dapat dijalankan
+5. Lakukan command ```chmod a+x ~/febug/febug.sh``` untuk memberikan akses kepada ```febug.sh```
 6. Selesai
 
 ## Cara Menjalankan
