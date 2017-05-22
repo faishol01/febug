@@ -26,7 +26,7 @@ FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux.
       
         Mode ini adalah mode interaktif. Gunakan ```-i``` untuk mode ini. Susunan file yang dibutuhkan:
          ```
-         /* Perlu diperhatikan bahwa code dan code.judge harus memiliki bahasa yang sama */
+         /* Perlu diperhatikan bahwa code dan code.judge harus menggunakan bahasa yang sama */
          code.cpp
          code.judge.cpp
          code.in
