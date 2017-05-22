@@ -1,4 +1,4 @@
-# FeBug
+# FeBug v1.2.1
 
 FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux. Untuk saat ini, FeBug dapat men-*compile* bahasa C, C++11, dan Pascal. FeBug membantu dalam men-*debug* program anda tanpa mengubah kode program.
 
