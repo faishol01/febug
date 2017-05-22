@@ -1,30 +1,5 @@
 #!/bin/bash
 
-#HEADER
-satu(){
-	echo "================"
-	echo "| Compiling... |"
-	echo "================"
-}
-
-dua(){
-	echo "================"
-	echo "| Compile Done |"
-	echo "================"
-
-	echo "==================="
-	echo "| RUNNING PROGRAM |"
-	echo "==================="
-	echo ""
-}
-#END HEADER
-
-footer(){
-	echo ""
-	echo "			     FeBug version 1.1.1"
-	echo "		Developed by Muhammad Faishol Amirul Mukminin"
-}
-
 usage(){
 	echo "Usage: febug <SOURCE CODE> [MODE]"
 	echo ""
@@ -38,88 +13,122 @@ usage(){
 	exit 0
 }
 
-interaktif(){
-	satu
-	#Compile the source code and show the stderr
-	g++ $FILE.cpp -o $FILE -std=c++11
-	g++ $FILE.judge.cpp -o $FILE.judge -std=c++11
-	dua
+compile(){
+	echo "================"
+	echo "| Compiling... |"
+	echo "================"
 
-	mkfifo pipa pipa2
+	#Get code language from file extention
+	if [[ $file == *".cpp" ]]
+	then
+		file=${file/.cpp/}
+		g++ $file.cpp -o $file -std=c++11
 
-	cat $FILE.in > pipa | ./$FILE.judge < pipa | tee pipa2 >> $FILE.tmp | ./$FILE < pipa2 | tee pipa >> $FILE.tmp
+		if [ "$mode" == '-i' ]
+		then
+			g++ $file.judge.cpp -o $file.judge -std=c++11
+		fi
 
-	rm pipa pipa2
+	elif [[ $file == *".c" ]]
+	then
+		file=${file/.c/}
+		g++ $file.c -o $file -std=c++11
 
-	echo ""
-	echo "============START INTERACTION============"
-				cat $FILE.tmp | tee $FILE.out
-				rm $FILE.tmp
-	echo "=============END INTERACTION============="
-	echo ""
+		if [ "$mode" == '-i' ]
+		then
+			g++ $file.judge.c -o $file.judge -std=c++11
+		fi
 
+	elif [[ $file == *".pas" ]]
+	then
+		file=${file/.pas/}
+		fpc $file.pas -o $file
+
+		if [ "$mode" == '-i' ]
+		then
+			fpc $file.judge.pas -o $file.judge
+		fi
+
+	else
+		clear
+		echo "Bahasa belum didukung"
+		footer
+		exit 0
+	fi
+
+	echo "================"
+	echo "| Compile Done |"
+	echo "================"
+}
+
+run_program(){
+	echo "==================="
+	echo "| RUNNING PROGRAM |"
+	echo "==================="
+
+	if [ "$mode" == '-c' ]; then
+		echo "============START PROGRAM============"
+			./$file
+		echo "=============END PROGRAM============="
+
+	elif [ "$mode" == '-i' ]; then
+		mkfifo pipa pipa2
+		cat $file.in > pipa | ./$file.judge < pipa | tee pipa2 >> $file.tmp | ./$file < pipa2 | tee pipa >> $file.tmp
+		rm pipa pipa2
+
+		echo "============START INTERACTION============"
+				cat $file.tmp | tee $file.out
+				rm $file.tmp
+		echo "=============END INTERACTION============="
+
+		echo ""
 			cat verdict
 			rm verdict
+
+	else
+		echo "lljjll"
+		{ time ./$file < $file.in > $file.out ; } 2> waktu
+
+		echo "============START OUTPUT============"
+					cat $file.out
+		echo "=============END OUTPUT============="
+
+		echo "================"
+		echo "| RUNNING TIME |"
+		echo "================"
+			#Show command running time
+			cat waktu
+			rm waktu
+
+	fi
+
 }
 
-normal(){
-	satu
-	#Compile the source code and show the stderr
-	g++ $FILE.cpp -o $FILE -std=c++11
-	dua
-	echo "============START OUTPUT============"
-	#Show the output using stdout and redirect to file
-	# "time" use for get command running time
-	{ time ./$FILE < $FILE.in | tee $FILE.out ; } 2> waktu
-	echo "=============END OUTPUT============="
+footer(){
 	echo ""
-
-	echo "================"
-	echo "| RUNNING TIME |"
-	echo "================"
-	#Show command running time
-	cat waktu
-	rm waktu
+	echo ""
+	echo "			     FeBug version 1.2.1"
+	echo "		Developed by Muhammad Faishol Amirul Mukminin"
 }
 
-hanyaCompile(){
-	satu
-	#Compile the source code and show the stderr
-	g++ $FILE.cpp -o $FILE -std=c++11
-	dua
+# MAIN PROGRAM
+	file=$1
+	mode=$2
 
-	echo "============START PROGRAM============"
-	./$FILE
-	echo "=============END PROGRAM============="
-}
+	if [ $# -lt 1 ]; then
+		usage
+	fi
 
-args=("$@")
-FILE=${args[0]/.cpp/}
+	if (( $# == 2 )); then
+		if [[ "$2" != '-i' && "$2" != '-n' && "$2" != '-c' ]]; then
+			echo "Invalid mode"
+			exit 0
+		fi
+	fi
 
-if [ $# -lt 1 ]; then
-	usage
-fi
+	clear
+	compile
+	run_program
+	footer
 
-clear
-
-case "$2" in
-	--compile-run) hanyaCompile
-	;;
-	-c) hanyaCompile
-	;;
-	--interactive) interaktif
-	;;
-	-i) interaktif
-	;;
-	--normal) normal
-	;;
-	-n) normal
-	;;
-	*) normal
-	;;
-esac
-
-#Footer
-echo ""
-footer
-# EOF
+#END MAIN PROGRAM
