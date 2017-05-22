@@ -1,6 +1,6 @@
 # FeBug
 
-FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux. Untuk saat ini, FeBug hanya dapat men-*compile* bahasa c++11. FeBug membantu dalam men-*debug* program anda tanpa mengubah kode program.
+FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux. Untuk saat ini, FeBug dapat men-*compile* bahasa C, C++11, dan Pascal. FeBug membantu dalam men-*debug* program anda tanpa mengubah kode program.
 
 ## Cara Install
 1. Download febug.sh
@@ -26,6 +26,7 @@ FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux.
       
         Mode ini adalah mode interaktif. Gunakan ```-i``` untuk mode ini. Susunan file yang dibutuhkan:
          ```
+         /* Perlu diperhatikan bahwa code dan code.judge harus memiliki bahasa yang sama */
          code.cpp
          code.judge.cpp
          code.in
