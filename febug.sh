@@ -1,5 +1,10 @@
 #!/bin/bash
-
+#
+# Created by Muhammad Faishol Amirul Mukminin on 17/05/17 07:32 PM
+# Copyright (c) 2017. All rights reserved.
+#  
+# Last modified 22/05/17 08:53 PM
+# 
 usage(){
 	echo "Usage: febug <SOURCE CODE> [MODE]"
 	echo ""
