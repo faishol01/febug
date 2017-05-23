@@ -2,16 +2,22 @@
 #
 # Created by Muhammad Faishol Amirul Mukminin on 17/05/17 07:32 PM
 # Copyright (c) 2017. All rights reserved.
-#  
-# Last modified 22/05/17 08:53 PM
-# 
+#
+# Last modified 24/05/17 12:01 AM
+#
 usage(){
 	echo "Usage: febug <SOURCE CODE> [MODE]"
 	echo ""
 	echo "[MODE]"
-	echo "  -c, --compile-run         compile and run only. Input using STDIN."
-	echo "  -i, --interactive         interactive mode."
-	echo "  -n, --normal              normal mode. Input using FILE."
+	echo "  -c                compile and run only. Input using STDIN."
+	echo "  -i<x>   Output format:"
+	echo "      -i            interactive mode with default judger."
+	echo "      -i=<FILE>     interactive mode with custom judger."
+	echo ""
+	echo "  -n<x>   Output format:"
+	echo "      -n            normal mode. Input using FILE."
+	echo "      -n=<FILE>     normal mode. Input using custom FILE."
+	echo "      -n=<FOLDER>   normal mode. Input using all files in FOLDER."
 	echo ""
 	echo "MODE will use '-n' for the default."
 	footer
@@ -24,41 +30,74 @@ compile(){
 	echo "================"
 
 	#Get code language from file extention
-	if [[ $file == *".cpp" ]]
+	if [[ $file == *".cpp" || $file == *".c" ]]
 	then
 		file=${file/.cpp/}
-		g++ $file.cpp -o $file -std=c++11
-
-		if [ "$mode" == '-i' ]
-		then
-			g++ $file.judge.cpp -o $file.judge -std=c++11
-		fi
-
-	elif [[ $file == *".c" ]]
-	then
 		file=${file/.c/}
-		g++ $file.c -o $file -std=c++11
+		stt=$( g++ $file.cpp -o $file -std=c++11 -O2 )
 
-		if [ "$mode" == '-i' ]
-		then
-			g++ $file.judge.c -o $file.judge -std=c++11
+		echo $stt
+		if [[ $stt == *"error:"* ]]; then
+			echo ""
+			echo "[ERROR] Compilation Error"
+			footer
+			exit 0
 		fi
 
 	elif [[ $file == *".pas" ]]
 	then
 		file=${file/.pas/}
-		fpc $file.pas -o $file
+		stt=$( fpc $file.pas -o $file -O2 )
 
-		if [ "$mode" == '-i' ]
-		then
-			fpc $file.judge.pas -o $file.judge
+		echo $stt
+		if [[ $stt == *"Compilation aborted"* ]]; then
+			echo ""
+			echo "[ERROR] Compilation Error"
+			footer
+			exit 0
 		fi
 
 	else
 		clear
-		echo "Bahasa belum didukung"
+		echo "[ERROR] Invalid source code"
 		footer
 		exit 0
+	fi
+
+	if [ "$mode" == '-i' ]
+	then
+			if [[ $judge == *".cpp" || $judge == *".c" ]]
+			then
+				judge=${judge/.cpp/}
+				judge=${judge/.c/}
+				stt=$( g++ $judge.cpp -o $judge -std=c++11 -O2 )
+
+				echo $stt
+				if [[ $stt == *"error:"* ]]; then
+					echo ""
+					echo "[ERROR] Compilation Error"
+					footer
+					exit 0
+				fi
+
+			elif [[ $judge == *".pas" ]]
+			then
+				judge=${judge/.pas/}
+				stt=$( fpc $judge.pas -o $judge -O2 )
+
+				echo $stt
+				if [[ $stt == *"Compilation aborted"* ]]; then
+					echo ""
+					echo "[ERROR] Compilation Error"
+					footer
+					exit 0
+				fi
+			else
+				clear
+				echo "[ERROR] Invalid source code"
+				footer
+				exit 0
+			fi
 	fi
 
 	echo "================"
@@ -77,9 +116,9 @@ run_program(){
 		echo "=============END PROGRAM============="
 
 	elif [ "$mode" == '-i' ]; then
-		mkfifo pipa pipa2
-		cat $file.in > pipa | ./$file.judge < pipa | tee pipa2 >> $file.tmp | ./$file < pipa2 | tee pipa >> $file.tmp
-		rm pipa pipa2
+		mkfifo pipa1 pipa2
+		cat $file.in > pipa1 | ./$judge < pipa1 | tee pipa2 >> $file.tmp | ./$file < pipa2 | tee pipa1 >> $file.tmp
+		rm pipa1 pipa2
 
 		echo "============START INTERACTION============"
 				cat $file.tmp | tee $file.out
@@ -91,43 +130,110 @@ run_program(){
 			rm verdict
 
 	else
-		echo "lljjll"
-		{ time ./$file < $file.in > $file.out ; } 2> waktu
+		if [ "$n_args" == 'file' ]; then
+			#If file
+			{ time ./$file < $inp_file > $out_file ; } 2> waktu
 
-		echo "============START OUTPUT============"
-					cat $file.out
-		echo "=============END OUTPUT============="
+			echo "============START OUTPUT============"
+						cat $out_file
+			echo "=============END OUTPUT============="
 
-		echo "================"
-		echo "| RUNNING TIME |"
-		echo "================"
-			#Show command running time
-			cat waktu
-			rm waktu
+			echo "================"
+			echo "| RUNNING TIME |"
+			echo "================"
+				#Show command running time
+				cat waktu
+				rm waktu
+		else
+			ls $path > _FBG_
+
+			while read -r inp
+			do
+				stt=$( file $path/$inp )
+
+				if [[ $stt == *"ASCII text"* ]]; then
+					out=${inp/.in/.out}
+					out=${out/.txt/.out}
+
+					if [[ $inp == *".in" || $inp == *".txt" ]]; then
+						echo "Processing "$path/$inp
+
+						./$file < $path/$inp > $path/$out
+
+						echo "Finished with output "$path/$out
+					fi
+				fi
+			done < _FBG_
+
+			rm _FBG_
+		fi
 
 	fi
-
+	echo ""
+	echo "Your program running successfully"
 }
 
 footer(){
 	echo ""
 	echo ""
-	echo "			     FeBug version 1.2.1"
-	echo "		Developed by Muhammad Faishol Amirul Mukminin"
+	echo "                    FeBug version 1.3.0"
+	echo "       Developed by Muhammad Faishol Amirul Mukminin"
 }
 
 # MAIN PROGRAM
 	file=$1
+
 	mode=$2
+	judge=${file/./.judge.}
+
+	n_args=file
+
+	path=
+
+	inp_file=${file/.cpp/.in}
+	inp_file=${inp_file/.c/.in}
+	inp_file=${inp_file/.pas/.in}
+
+	out_file=${inp_file/.in/.out}
 
 	if [ $# -lt 1 ]; then
 		usage
 	fi
 
 	if (( $# == 2 )); then
-		if [[ "$2" != '-i' && "$2" != '-n' && "$2" != '-c' ]]; then
-			echo "Invalid mode"
+		if [[ $mode != "-i"* && $mode != "-n"* && "$2" != '-c' ]]; then
+			echo "[ERROR] Invalid mode"
+			footer
 			exit 0
+		else
+			if [[ $mode == "-i="* ]]
+			then
+				judge=${mode/-i=/}
+				mode=-i
+			elif [[ $mode == "-n="* ]]
+			then
+				n_args=${mode/-n=/}
+				stt=$( file $n_args )
+
+				if [[ $stt == *"cannot"* ]]; then
+					echo "[ERROR] "$stt
+					footer
+					exit 0
+				elif [[ $stt == *"directory"* ]]; then
+					path=$n_args
+					n_args=folder
+
+				elif [[ $n_args == *".in" || $n_args == *".txt" ]]; then
+					inp_file=$n_args
+
+					out_file=${inp_file/.in/.out}
+					out_file=${out_file/.txt/.out}
+
+					n_args=file
+				fi
+
+				mode=-n
+			fi
 		fi
 	fi
 
