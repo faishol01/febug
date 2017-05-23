@@ -3,7 +3,7 @@
 # Created by Muhammad Faishol Amirul Mukminin on 17/05/17 07:32 PM
 # Copyright (c) 2017. All rights reserved.
 #
-# Last modified 24/05/17 12:01 AM
+# Last modified 24/05/17 12:33 AM
 #
 usage(){
 	echo "Usage: febug <SOURCE CODE> [MODE]"
@@ -34,9 +34,10 @@ compile(){
 	then
 		file=${file/.cpp/}
 		file=${file/.c/}
-		stt=$( g++ $file.cpp -o $file -std=c++11 -O2 )
+		stt=$( g++ $file.cpp -o $file -std=c++11 -O2 2>&1 | tee _STT_ )
 
-		echo $stt
+		cat _STT_
+		rm _STT_
 		if [[ $stt == *"error:"* ]]; then
 			echo ""
 			echo "[ERROR] Compilation Error"
@@ -47,10 +48,12 @@ compile(){
 	elif [[ $file == *".pas" ]]
 	then
 		file=${file/.pas/}
-		stt=$( fpc $file.pas -o $file -O2 )
+		stt=$( fpc $file.pas -o $file -O2 2>&1 | tee _STT_ )
 
-		echo $stt
-		if [[ $stt == *"Compilation aborted"* ]]; then
+		cat _STT_
+		rm _STT_
+
+		if [[ $stt == *"error exitcode"* ]]; then
 			echo ""
 			echo "[ERROR] Compilation Error"
 			footer
@@ -70,10 +73,12 @@ compile(){
 			then
 				judge=${judge/.cpp/}
 				judge=${judge/.c/}
-				stt=$( g++ $judge.cpp -o $judge -std=c++11 -O2 )
+				stt=$( g++ $judge.cpp -o $judge -std=c++11 -O2 2>&1 | tee _STT_ )
 
-				echo $stt
-				if [[ $stt == *"error:"* ]]; then
+				cat _STT_
+				rm _STT_
+
+				if [[ $stt == *"error"* ]]; then
 					echo ""
 					echo "[ERROR] Compilation Error"
 					footer
@@ -83,10 +88,12 @@ compile(){
 			elif [[ $judge == *".pas" ]]
 			then
 				judge=${judge/.pas/}
-				stt=$( fpc $judge.pas -o $judge -O2 )
+				stt=$( fpc $judge.pas -o $judge -O2 2>&1 | tee _STT_ )
 
-				echo $stt
-				if [[ $stt == *"Compilation aborted"* ]]; then
+				cat _STT_
+				rm _STT_
+
+				if [[ $stt == *"error exitcode"* ]]; then
 					echo ""
 					echo "[ERROR] Compilation Error"
 					footer
@@ -116,6 +123,14 @@ run_program(){
 		echo "=============END PROGRAM============="
 
 	elif [ "$mode" == '-i' ]; then
+
+		stt=$( file $file.in )
+		if [[ $stt == *"cannot"* ]]; then
+			echo "[ERROR] Missing or invalid input file"
+			footer
+			exit 0
+		fi
+
 		mkfifo pipa1 pipa2
 		cat $file.in > pipa1 | ./$judge < pipa1 | tee pipa2 >> $file.tmp | ./$file < pipa2 | tee pipa1 >> $file.tmp
 		rm pipa1 pipa2
@@ -130,6 +145,13 @@ run_program(){
 			rm verdict
 
 	else
+		stt=$( file $file.in )
+		if [[ $stt == *"cannot"* ]]; then
+			echo "[ERROR] Missing or invalid input file"
+			footer
+			exit 0
+		fi
+
 		if [ "$n_args" == 'file' ]; then
 			#If file
 			{ time ./$file < $inp_file > $out_file ; } 2> waktu
@@ -176,7 +198,7 @@ run_program(){
 footer(){
 	echo ""
 	echo ""
-	echo "                    FeBug version 1.3.0"
+	echo "                    FeBug version 1.3.1"
 	echo "       Developed by Muhammad Faishol Amirul Mukminin"
 }
 
