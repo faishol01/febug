@@ -1,6 +1,6 @@
 # FeBug v1.3.0
 
-FeBug hanya dapat berjalan di OS Linux, karena FeBug dibangun dengan bash-linux. Untuk saat ini, FeBug dapat men-*compile* bahasa C, C++11, dan Pascal. FeBug membantu dalam men-*debug* program anda tanpa mengubah kode program.
+FeBug hanya dapat berjalan di Linux, karena FeBug dibangun dengan bash-linux. Untuk saat ini, FeBug dapat men-*compile* bahasa C, C++11, dan Pascal. FeBug membantu dalam men-*debug* program anda tanpa mengubah kode program.
 
 ## Cara Install
 1. Download febug.sh
