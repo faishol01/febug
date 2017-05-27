@@ -32,9 +32,13 @@ compile(){
 	#Get code language from file extention
 	if [[ $file == *".cpp" || $file == *".c" ]]
 	then
-		file=${file/.cpp/}
-		file=${file/.c/}
-		stt=$( g++ $file.cpp -o $file -std=c++11 -O2 2>&1 | tee _STT_ )
+		if [[ $file == *".cpp" ]]; then
+				file=${file/.cpp/}
+				stt=$( g++ $file.cpp -o $file -std=c++11 -O2 2>&1 | tee _STT_ )
+		else
+				file=${file/.c/}
+				stt=$( g++ $file.c -o $file -std=c++11 -O2 2>&1 | tee _STT_ )
+		fi
 
 		cat _STT_
 		rm _STT_
@@ -71,9 +75,13 @@ compile(){
 	then
 			if [[ $judge == *".cpp" || $judge == *".c" ]]
 			then
-				judge=${judge/.cpp/}
-				judge=${judge/.c/}
-				stt=$( g++ $judge.cpp -o $judge -std=c++11 -O2 2>&1 | tee _STT_ )
+				if [[ $judge == *".cpp" ]]; then
+						judge=${judge/.cpp/}
+						stt=$( g++ $judge.cpp -o $judge -std=c++11 -O2 2>&1 | tee _STT_ )
+				else
+						judge=${judge/.c/}
+						stt=$( g++ $judge.c -o $judge -std=c++11 -O2 2>&1 | tee _STT_ )
+				fi
 
 				cat _STT_
 				rm _STT_
@@ -198,7 +206,7 @@ run_program(){
 footer(){
 	echo ""
 	echo ""
-	echo "                    FeBug version 1.3.1"
+	echo "                    FeBug version 1.3.2"
 	echo "       Developed by Muhammad Faishol Amirul Mukminin"
 }
 
